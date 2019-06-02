@@ -45,50 +45,52 @@ export class OutputGraphComponent implements OnInit {
     series: [
         {
             name: '',
-            data: [75, 0, 47, 28, 0]
+            data: []
         },
         {
             name: '',
-            data: [159, 0, 0, 148, 11]
+            data: []
         },
         {
             name: '',
-            data: [62, 0, 0, 0, 56]
+            data: []
         },
         {
             name: '',
-            data: [43, 0, 0, 0]
-        }]
-  }
+            data: []
+        }
+        ]
+  };
+
   private http: any;
   subscription: Subscription;
   xList: Array<String> = [];
   yList: Array<number> = [];
-  ouetArrayList: Array<any> = [];
+  outArrayList: Array<any> = [];
 
   constructor(http: Http)
   {
       this.http = http;
-      let request = this.http.get(ApiEndpoints.ENDPOINT.VIEW_GRAPH).subscribe(response => {
+      this.http.get(ApiEndpoints.ENDPOINT.VIEW_GRAPH).subscribe(response => {
 
           if (response.status === 200 ) {
                let increment = 0;
               response.json().data.forEach(row => {
 
                   this.xList.push(row['date']);
-
                   this.yList.push(row['size']);
-                  this.yList.push(row['w1']);
-                  this.yList.push(row['w2']);
-                  this.yList.push(row['w3']);
-                  this.yList.push(row['w4']);
-                  this.ouetArrayList.push(this.yList);
-                  this.options.series[0]['data'] = this.yList;
+                  this.yList.push(parseInt(row['w1']));
+                  this.yList.push(parseInt(row['w2']));
+                  this.yList.push(parseInt(row['w3']));
+                  this.yList.push(parseInt(row['w4']));
+                  this.outArrayList.push(this.yList);
+                  this.options.series[increment]['data'] = this.yList;
                   this.options.series[increment]['name'] = row['date'];
-                  console.log(increment);
+                  // console.log(this.options.series[0]['data']);
                   this.yList = [];
                   increment++;
               });
+
                this.options.xAxis.categories = this.xList;
                // this.options.series[0]['name'] = this.xList;
                Highcharts.chart('container', this.options);
